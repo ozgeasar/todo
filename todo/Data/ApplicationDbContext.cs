@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using todo.Models;
 
 namespace todo.Data
 {
@@ -11,6 +12,9 @@ namespace todo.Data
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
+            
         }
+        public DbSet<Category> Categories { get; set; }
+        public DbSet<TodoItem> TodoItems { get; set; }
     }
 }
