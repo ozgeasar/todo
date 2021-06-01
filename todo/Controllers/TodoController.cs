@@ -151,6 +151,31 @@ namespace todo.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+        public async Task<IActionResult> MakeComplete(int id)
+        {
+            return await ChangeStatus(id, true);
+
+        }
+        public async Task<IActionResult> MakeInComplete(int id)
+        {
+            return await ChangeStatus(id, false);
+
+        }
+        private async Task<IActionResult> ChangeStatus(int id, bool status)
+        {
+            var todoItemItem = _context.TodoItems.FirstOrDefault(todo => todo.Id == id);
+            if (todoItemItem == null)
+            {
+                return NotFound();
+            }
+            todoItemItem.IsCompleted = status;
+            todoItemItem.CompletedDate = DateTime.Now;
+
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+
+       
 
         private bool TodoItemExists(int id)
         {
