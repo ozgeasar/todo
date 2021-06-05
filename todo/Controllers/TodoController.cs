@@ -34,7 +34,9 @@ namespace todo.Controllers
                 query = query.Where(t => t.Title.Contains(searchModel.SearchText, StringComparison.OrdinalIgnoreCase));
             }
             query = query.OrderBy(t => t.DueDate);
-            return View(await query.ToListAsync());
+            searchModel.Result = await query.ToListAsync();
+
+            return View(searchModel);
         }
 
         // GET: Todo/Details/5
