@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -10,7 +11,9 @@ using todo.Data;
 using todo.Models;
 
 namespace todo.Controllers
+
 {
+    [Authorize]
     public class TodoController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -21,13 +24,14 @@ namespace todo.Controllers
             _context = context;
             _userManager = userManager;
         }
+        [AllowAnonymous]
 
         // GET: Todo
         public async Task<IActionResult> Index(SearchViewModel searchModel)
         {
             //var applicationDbContext = _context.TodoItems.Include(t => t.Category);
             //return View(await applicationDbContext.ToListAsync());
-            var query = _context.TodoItems.Include(t => t.Category).AsQueryable();
+            var query = _context.TodoItems.Include(t => t.Category).Where(t=>t.CetUserId == "");
             if (!searchModel.ShowAll)
             {
                 query = query.Where(t => !t.IsCompleted);
@@ -62,6 +66,7 @@ namespace todo.Controllers
         }
 
         // GET: Todo/Create
+        [Authorize]
         public IActionResult Create()
         {
             ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name");
@@ -69,10 +74,12 @@ namespace todo.Controllers
         }
 
         // POST: Todo/Create
+
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> Create([Bind("Id,Title,Description,IsCompleted,DueDate,CategoryId")] TodoItem todoItem)
         {
             var cetUser = await _userManager.GetUserAsync(HttpContext.User);
