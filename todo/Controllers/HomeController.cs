@@ -27,17 +27,25 @@ namespace todo.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var cetUser= await userManager.GetUserAsync(HttpContext.User);
+            List<TodoItem> result;
+            if (User.Identity.IsAuthenticated)
+            {
+
+            
+            var cetUser = await userManager.GetUserAsync(HttpContext.User);
             var query = dbContext.TodoItems
-                .Include(t=> t.Category)
+                .Include(t => t.Category)
                  .Where(t => t.CetUserId == cetUser.Id && !t.IsCompleted)
                  .OrderBy(t => t.DueDate)
                  .Take(3);
-            List<TodoItem> result = await query.ToListAsync();
-
-            return View(result);
+            result = await query.ToListAsync();
+        }
+        else{
+        result = new List<TodoItem>();
         }
 
+        return View(result);
+}
         public IActionResult Privacy()
         {
             return View();

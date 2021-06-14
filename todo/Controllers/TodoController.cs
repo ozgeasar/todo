@@ -128,6 +128,8 @@ namespace todo.Controllers
             {
                 try
                 {
+                    var oldTodo = await _context.TodoItems.FindAsync(id);
+                    var cetUser = await _userManager.GetUserAsync(HttpContext.User);
                     _context.Update(todoItem);
                     await _context.SaveChangesAsync();
                 }
