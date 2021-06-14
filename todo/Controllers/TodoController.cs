@@ -31,7 +31,8 @@ namespace todo.Controllers
         {
             //var applicationDbContext = _context.TodoItems.Include(t => t.Category);
             //return View(await applicationDbContext.ToListAsync());
-            var query = _context.TodoItems.Include(t => t.Category).Where(t=>t.CetUserId == "");
+            var cetUser = await _userManager.GetUserAsync(HttpContext.User);
+            var query = _context.TodoItems.Include(t => t.Category).Where(t=>t.CetUserId == cetUser.Id);
             if (!searchModel.ShowAll)
             {
                 query = query.Where(t => !t.IsCompleted);

@@ -6,3 +6,28 @@
     <h1 class="display-4">Welcome</h1>
     <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>
+
+@if (User.Identity.IsAuthenticated)
+{
+    @if (!Model.Any())
+        {
+        <div class="text-center">
+        <h1 class="display-4">Congratulations!!! You completed all</h1>    
+        </div>
+        }
+                else
+                {
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>
+                                    
+                                </th>
+                                <th>
+                                    
+                                </th>
+                            </tr>
+                        </thead>
+                    </table>
+                }
+    }

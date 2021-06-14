@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
@@ -15,18 +16,21 @@ namespace todo.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly ApplicationDbContext dbContext;
+        private readonly UserManager<CetUser> userManager;
 
-        public HomeController(ILogger<HomeController> logger, ApplicationDbContext dbContext)
+        public HomeController(ILogger<HomeController> logger, ApplicationDbContext dbContext, UserManager<CetUser> userManager)
         {
             _logger = logger;
             this.dbContext = dbContext;
+            this.userManager = userManager;
         }
 
         public async Task<IActionResult> Index()
         {
+            var cetUser= await userManager.GetUserAsync(HttpContext.User);
             var query = dbContext.TodoItems
                 .Include(t=> t.Category)
-                 .Where(t => !t.IsCompleted)
+                 .Where(t => t.CetUserId == cetUser.Id && !t.IsCompleted)
                  .OrderBy(t => t.DueDate)
                  .Take(3);
             List<TodoItem> result = await query.ToListAsync();
