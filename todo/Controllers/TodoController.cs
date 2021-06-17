@@ -129,7 +129,21 @@ namespace todo.Controllers
                 try
                 {
                     var oldTodo = await _context.TodoItems.FindAsync(id);
-                    var cetUser = await _userManager.GetUserAsync(HttpContext.User);
+                    var currentUser = await _userManager.GetUserAsync(HttpContext.User);
+
+                    if(oldTodo.CetUserId == currentUser.Id)
+                    {
+                        return Unauthorized();
+                    }
+                    oldTodo.Title = todoItem.Title;
+                    oldTodo.CompletedDate = todoItem.CompletedDate;
+                    oldTodo.CategoryId = todoItem.CategoryId;
+                    oldTodo.IsCompleted = todoItem.IsCompleted;
+                    oldTodo.Description = todoItem.Description;
+                    oldTodo.DueDate = todoItem.DueDate;
+
+
+
                     _context.Update(todoItem);
                     await _context.SaveChangesAsync();
                 }
